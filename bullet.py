@@ -5,7 +5,7 @@ from pygame.sprite import Sprite
 class Bullet(Sprite):
 
     def __init__(self, ai_settings, screen, ship):
-        super().__init__()
+        super().__init__()      # dziedziczenie po klasie Sprite
         self.screen = screen
         self.rect = pygame.Rect(0, 0, ai_settings.bullet_width, ai_settings.bullet_height)  # tworzymy pocisk na (0, 0)
         self.rect.centerx = ship.rect.centerx  # po stworzeniu na (0, 0) ustawiamy pocisk na pozycji statku
@@ -20,4 +20,5 @@ class Bullet(Sprite):
 
     def draw_bullet(self):
         pygame.draw.rect(self.screen, self.color, self.rect)  # wypełnia kwadrat ekranu określony w self.rect kolorem
+        # nie jest to blitme, bo pociski nie używają gotowego obrazka, wypełniamy jedynie dany rect ekranu kolorem
 

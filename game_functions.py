@@ -1,6 +1,7 @@
 import sys  # sys używamy do wychodzenia z programu
 import pygame
 from bullet import Bullet
+from alien import Alien
 
 
 def check_events(ai_settings, screen, ship, bullets):
@@ -31,11 +32,12 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def update_screen(ai_settings, screen, ship, bullets):
+def update_screen(ai_settings, screen, ship, aliens, bullets):
     screen.fill(ai_settings.bg_color)  # wypełnia ekran kolorem przy każdym przejściu pętli
     for bullet in bullets.sprites():
         bullet.draw_bullet()
-    ship.blitme()
+    ship.blitme()                      # blitme powoduje pojawienie się obiektu na ekranie
+    aliens.draw(screen)  # draw na grupie to rysowanie każdego elem. wg. jego parametru rect (w tym wypadku na ekranie)
     pygame.display.flip()  # pokazujemy ostatnie rysowanie ekranu
 
 
@@ -52,3 +54,33 @@ def fire_bullet(ai_settings, screen, ship, bullets):  # wyciągnięte z check_ke
     if len(bullets) < ai_settings.bullets_allowed:
         new_bullet = Bullet(ai_settings, screen, ship)
         bullets.add(new_bullet)
+
+
+def create_fleet(ai_settings, screen, ship, aliens):
+        alien = Alien(ai_settings, screen)
+        number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)  # pobieramy współrzędne szerokości
+        number_rows = get_number_rows(ai_settings, ship.rect.height, alien.rect.height)
+        for row_number in range(number_rows):
+            for alien_number in range(number_aliens_x):
+                create_alien(ai_settings, screen, aliens, alien_number, row_number)
+
+
+def get_number_aliens_x(ai_settings, alien_width):
+    available_space_x = ai_settings.screen_width - 2 * alien_width  # wyliczamy dostępną przestrzeń ekranu
+    number_aliens_x = int(available_space_x / (2 * alien_width))  # możliwa liczba alienów (int zaokrągla do pełnych)
+    return number_aliens_x
+
+
+def create_alien(ai_settings, screen, aliens, alien_number, row_number):
+    alien = Alien(ai_settings, screen)  # tworzymy instancję aliena, zebu pobrać jego wymiary (nie będzie we flocie)
+    alien_width = alien.rect.width  # pobieramy width z recta aliena
+    alien.x = alien_width + (2 * alien_width) * alien_number  # kolejne alieny o szerokość od brzegu,
+    alien.rect.x = alien.x  # razy rezerwacja miejsca razem z przerwą pomiędzy, razy pozycja w rzędzie
+    alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number  # w dół od drugiego (pierwszy rząd = numer 0)
+    aliens.add(alien)  # powstający rząd 'wypycha' się w prawo, aż osiągnie brzeg ekranu
+
+
+def get_number_rows(ai_settings, ship_height, alien_height):
+    available_space_y = (ai_settings.screen_height - (3 * alien_height) - ship_height)
+    number_rows = int(available_space_y / (2 * alien_height))  # int, bo nie chcemy 'częściowych' rzędów
+    return number_rows
