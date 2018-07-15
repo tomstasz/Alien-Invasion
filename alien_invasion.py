@@ -6,7 +6,6 @@ import game_functions as gf
 from pygame.sprite import Group
 
 
-
 def run_game():
 
     pygame.init()  # zainicjowanie gry
@@ -22,7 +21,8 @@ def run_game():
     while True:  # Start głównej pętli dzaiłania gry
         gf.check_events(ai_settings, screen, ship, bullets)   # sprawdza input gracza
         ship.update()                                         # upadte pozycji statku
-        gf.update_bullets(bullets)                            # update wystrzelonych pocisków
+        gf.update_bullets(ai_settings, screen, ship, aliens, bullets)                            # update wystrzelonych pocisków
+        gf.update_aliens(ai_settings, ship, aliens)
         gf.update_screen(ai_settings, screen, ship, aliens, bullets)  # na końcu używamy tych update'ów do update ekranu
 
 
