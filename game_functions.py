@@ -5,10 +5,13 @@ from alien import Alien
 from time import sleep
 
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, bullets):
     for event in pygame.event.get():  # pętla do wykrywania eventów myszy i klawiatury
         if event.type == pygame.QUIT:
             sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:  # MOUSEBUTTONDOWN wykrywa event kliknięcia gdziekolwiek na ekranie
+            mouse_x, mouse_y = pygame.mouse.get_pos()  # pobiera koordynaty kursora w momencie kliknięcia
+            check_play_button(stats, play_button, mouse_x, mouse_y)
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, ship, bullets)   # rozbicie check_events na mniejsze moduły
         elif event.type == pygame.KEYUP:
@@ -33,12 +36,14 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def update_screen(ai_settings, screen, ship, aliens, bullets):
+def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
     screen.fill(ai_settings.bg_color)  # wypełnia ekran kolorem przy każdym przejściu pętli
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     ship.blitme()                      # blitme powoduje pojawienie się obiektu na ekranie
     aliens.draw(screen)  # draw na grupie to rysowanie każdego elem. wg. jego parametru rect (w tym wypadku na ekranie)
+    if not stats.game_active:
+        play_button.draw_button()
     pygame.display.flip()  # pokazujemy ostatnie rysowanie ekranu
 
 
@@ -135,3 +140,8 @@ def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
         if alien.rect.bottom >= screen_rect.bottom:
             ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
             break  # break - bo wystarczy, że jeden alien dotknie dołu, nie musimy sprawdzać innych
+
+
+def check_play_button(stats, play_button, mouse_x, mouse_y):
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.game_active = True
