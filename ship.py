@@ -28,6 +28,9 @@ class Ship:
         self.screen.blit(self.image, self.rect)  # rysuj statek na ekranie w jego obecnym położeniu (self.rect)
         # 'kwadrat' statku ma się 'nakładać' z 'kwadratem' ekranu (obrazek wyswietlany w aktualnej pozycji po eventach)
 
+    def center_ship(self):
+        self.center = self.screen_rect.centerx
+
 
 
 

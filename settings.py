@@ -7,6 +7,7 @@ class Settings:
         self.screen_height = 800
         self.bg_color = (230, 230, 230)  # kolor tła (w pygame tylko jako RGB)
         self.ship_speed_factor = 1.5
+        self.ship_limit = 2
         self.bullet_speed_factor = 3
         self.bullet_width = 3   # zmiana parametrów (np. szerokości pocisku) może ułatwić testowanie np. pustego ekranu
         self.bullet_height = 15
