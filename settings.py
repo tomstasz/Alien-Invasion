@@ -16,4 +16,21 @@ class Settings:
         self.alien_speed_factor = 1
         self.fleet_drop_speed = 10  # wartość o jaką obniża się cały rząd alienów
         self.fleet_direction = 1  # 1 lub -1 determinuje kierunek przesuwania się alienów (prawo/lewo)
+        self.speedup_scale = 1.3  # wspólczynnik zwiększania szybkości gry po każdym levelu
+        self.initialize_dynamic_setting()
+
+    def initialize_dynamic_setting(self):
+        #  inicjujemy zmienne, które będą się zmieniać w trakcie gry
+        self.ship_speed_factor = 1.5
+        self.bullet_speed_factor = 3
+        self.alien_speed_factor = 1
+        self.fleet_direction = 1
+
+    def increase_speed(self):
+        self.ship_speed_factor *= self.speedup_scale
+        self.bullet_speed_factor *= self.speedup_scale
+        self.alien_speed_factor *= self.speedup_scale
+
+
+
 

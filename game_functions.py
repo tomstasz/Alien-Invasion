@@ -5,13 +5,13 @@ from alien import Alien
 from time import sleep
 
 
-def check_events(ai_settings, screen, stats, play_button, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
     for event in pygame.event.get():  # pętla do wykrywania eventów myszy i klawiatury
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:  # MOUSEBUTTONDOWN wykrywa event kliknięcia gdziekolwiek na ekranie
             mouse_x, mouse_y = pygame.mouse.get_pos()  # pobiera koordynaty kursora w momencie kliknięcia
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, ship, bullets)   # rozbicie check_events na mniejsze moduły
         elif event.type == pygame.KEYUP:
@@ -68,6 +68,7 @@ def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
     # słownik trafionych {bullet: alien}, True mówi czy kasować dany obiekt po wykryciu kolizji
     if len(aliens) == 0:
         bullets.empty()  # matoda empty usuwa wszystkie sprite'y grupy, które pozostały
+        ai_settings.increase_speed()  # przyspieszamy grę po ostatnim alienie, ale przed wygenerowaniem nowej floty
         create_fleet(ai_settings, screen, ship, aliens)
 
 
@@ -132,6 +133,7 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         sleep(0.5)
     else:
         stats.game_active = False   # flaga, brak statków to koniec gry
+        pygame.mouse.set_visible(True)  # kursor widoczny zaraz po tym, jak gra przestaje być aktywna
 
 
 def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
@@ -142,6 +144,14 @@ def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
             break  # break - bo wystarczy, że jeden alien dotknie dołu, nie musimy sprawdzać innych
 
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:  # aby rect buttona nie był "klikalny" podczas rozgrywki
+        ai_settings.initialize_dynamic_setting()  # resetujemy ustawienia gry przy każdym nowym starcie
+        pygame.mouse.set_visible(False)  # ukrywanie kursora podczas gry
+        stats.reset_stats()
         stats.game_active = True
+        aliens.empty()
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()

@@ -23,7 +23,7 @@ def run_game():
     stats = GameStats(ai_settings)
 
     while True:  # Start głównej pętli dzaiłania gry
-        gf.check_events(ai_settings, screen, stats, play_button, ship, bullets)   # sprawdza input gracza
+        gf.check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)   # sprawdza input gracza
         if stats.game_active:  # flaga
             ship.update()                                         # upadte pozycji statku
             gf.update_bullets(ai_settings, screen, ship, aliens, bullets)            # update wystrzelonych pocisków
