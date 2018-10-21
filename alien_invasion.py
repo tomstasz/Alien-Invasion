@@ -11,27 +11,26 @@ from scoreboard import Scoreboard
 
 def run_game():
 
-    pygame.init()  # zainicjowanie gry
+    pygame.init()
     ai_settings = Settings()
     screen = pygame.display.set_mode(
-        (ai_settings.screen_width, ai_settings.screen_height))  # stworzenie obiektu ekranu (surface)
+        (ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption("Alien Invasion")
     play_button = Button(ai_settings, screen, "Play")
     ship = Ship(ai_settings, screen)
-    bullets = Group()  # tworzy listę sprite'ów. Tworzymy przed petlą, żeby nie zawieszać ciągłym generowaniem obiektów
+    bullets = Group()
     aliens = Group()
     gf.create_fleet(ai_settings, screen, ship, aliens)
     stats = GameStats(ai_settings)
-    sb = Scoreboard(ai_settings, screen, stats)  # Scoreboard po stworzeniu instancji GameStats
+    sb = Scoreboard(ai_settings, screen, stats)
 
-    while True:  # Start głównej pętli dzaiłania gry
-        gf.check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)   # sprawdza input gracza
-        if stats.game_active:  # flaga
-            ship.update()                                         # upadte pozycji statku
-            gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets)   # update wystrzelonych pocisków
+    while True:
+        gf.check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets)
             gf.update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets)
-        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button)  # na końcu używamy tych
-        # update'ów do update ekranu
+        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button)
 
 
 run_game()
