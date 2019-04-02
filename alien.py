@@ -1,27 +1,28 @@
 import pygame
-from pygame.sprite import Sprite  # sprite do obsługi wielu poruszających się elementów
+from pygame.sprite import Sprite
 
 
 class Alien(Sprite):
 
     def __init__(self, ai_settings, screen):
-        super().__init__()     # dziedziczenie po klasie Sprite
+        super().__init__()
         self.screen = screen
         self.ai_settings = ai_settings
 
         self.image = pygame.image.load('images/alien.bmp')
         self.rect = self.image.get_rect()
 
-        self.rect.x = self.rect.width  # pozycja 'startowa' oddalona o jeden 'wymiar' aliena od góry i boku ekranu
+        self.rect.x = self.rect.width
         self.rect.y = self.rect.height
 
-        self.x = float(self.rect.x)  # uściślenie pozycji aliena
+        self.x = float(self.rect.x)
 
     def blitme(self):
-        self.screen.blit(self.image, self.rect)  # narysuj aliena na ekranie w jego aktualnej pozycji
+        self.screen.blit(self.image, self.rect)
 
     def update(self):
-        self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)  # * fleet_direction (1/-1)
+        self.x += (self.ai_settings.alien_speed_factor
+                   * self.ai_settings.fleet_direction)
         self.rect.x = self.x
 
     def check_edges(self):
@@ -30,4 +31,3 @@ class Alien(Sprite):
             return True
         elif self.rect.left <= 0:
             return True
-
